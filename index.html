@@ -3,51 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cielo Estrellado y Cometas</title>
+  <title>Cielo Estrellado y Cometas (Transparente)</title>
   <style>
     /* =========================================
        AJUSTES GLOBALES
        ========================================= */
-    body {
-      background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+    html, body {
+      background: transparent !important; /* Estrictamente transparente para xatframe */
       height: 100vh;
+      width: 100vw;
       margin: 0;
+      padding: 0;
       overflow: hidden;
-      display: flex;
-      font-family: 'Anton', sans-serif;
-      justify-content: center;
-      align-items: center;
     }
 
     /* =========================================
-       ESTRELLAS ESTÁTICAS
+       PARTICLES.JS CONTENEDOR (Estrellas)
        ========================================= */
-    .stars, .stars2 {
+    #particles-js {
       position: absolute;
+      width: 100%;
+      height: 100%;
       top: 0;
       left: 0;
-      background: transparent;
-    }
-
-    .stars {
-      width: 1px;
-      height: 1px;
-      animation: twinkle 3s infinite alternate;
-    }
-
-    .stars2 {
-      width: 2px;
-      height: 2px;
-      animation: twinkle 4s infinite alternate-reverse;
-    }
-
-    @keyframes twinkle {
-      0% { opacity: 0.2; }
-      100% { opacity: 1; }
+      z-index: 1;
     }
 
     /* =========================================
-       COMETAS
+       COMETAS (Esporádicos e infinitos)
        ========================================= */
     .night {
       position: absolute;
@@ -56,7 +39,8 @@
       width: 100%;
       height: 100%;
       transform: rotateZ(45deg);
-      pointer-events: none; /* Permite hacer clic a través de la animación */
+      pointer-events: none; /* No bloquea interacción del ratón con las estrellas */
+      z-index: 2;
     }
 
     .shooting_star {
@@ -65,10 +49,10 @@
       background: linear-gradient(-45deg, rgba(95, 145, 255, 1), rgba(0, 0, 255, 0));
       border-radius: 999px;
       filter: drop-shadow(0 0 6px rgba(105, 155, 255, 1));
-      /* La variable --delay la inyecta el JavaScript */
+      /* Ciclo de 25 segundos para que aparezcan de vez en cuando */
       animation: 
-        tail 3000ms ease-in-out infinite, 
-        shooting 3000ms ease-in-out infinite;
+        tail 25s ease-in-out infinite, 
+        shooting 25s ease-in-out infinite;
       animation-delay: var(--delay, 0ms);
     }
 
@@ -81,7 +65,7 @@
       height: 2px;
       background: linear-gradient(-45deg, rgba(0, 0, 255, 0), rgba(95, 145, 255, 1), rgba(0, 0, 255, 0));
       border-radius: 100%;
-      animation: shining 3000ms ease-in-out infinite;
+      animation: shining 25s ease-in-out infinite;
       animation-delay: var(--delay, 0ms);
     }
 
@@ -93,68 +77,166 @@
       transform: translateX(50%) rotateZ(-45deg);
     }
 
-    /* Animaciones de los cometas */
     @keyframes tail {
       0% { width: 0; }
-      30% { width: 100px; }
-      100% { width: 0; }
+      5% { width: 100px; } 
+      10% { width: 0; }    
+      100% { width: 0; }   
     }
 
     @keyframes shining {
       0% { width: 0; }
-      50% { width: 30px; }
+      5% { width: 30px; }
+      10% { width: 0; }
       100% { width: 0; }
     }
 
     @keyframes shooting {
       0% { transform: translateX(0); }
-      100% { transform: translateX(800px); }
+      10% { transform: translateX(1000px); } 
+      100% { transform: translateX(1000px); } 
     }
   </style>
 </head>
 <body>
 
-  <!-- Fondo estrellado -->
-  <div class="stars"></div>
-  <div class="stars2"></div>
+  <!-- Contenedor de Particles.js -->
+  <div id="particles-js"></div>
 
-  <!-- Contenedor donde el JS inyectará los cometas -->
+  <!-- Contenedor de Cometas -->
   <div class="night" id="night-container"></div>
 
+  <!-- Cargar Particles.js desde CDN -->
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
   <script>
-    // 1. Generar el fondo de estrellas estáticas con sombras
-    function generateBoxShadows(count) {
-      let shadows = [];
-      for (let i = 0; i < count; i++) {
-        // Coordenadas aleatorias (vw y vh) para cada estrella
-        shadows.push(`${Math.floor(Math.random() * 100)}vw ${Math.floor(Math.random() * 100)}vh #FFF`);
-      }
-      return shadows.join(', ');
-    }
+    particlesJS("particles-js", {
+      "particles": {
+        "number": {
+          "value": 355,
+          "density": {
+            "enable": true,
+            "value_area": 789.15
+          }
+        },
+        "color": {
+          "value": "#ffffff"
+        },
+        "shape": {
+          "type": "circle",
+          "stroke": {
+            "width": 0,
+            "color": "#000000"
+          },
+          "polygon": {
+            "nb_sides": 5
+          },
+          "image": {
+            "src": "img/github.svg",
+            "width": 100,
+            "height": 100
+          }
+        },
+        "opacity": {
+          "value": 0.49,
+          "random": false,
+          "anim": {
+            "enable": true,
+            "speed": 0.25,
+            "opacity_min": 0,
+            "sync": false
+          }
+        },
+        "size": {
+          "value": 2,
+          "random": true,
+          "anim": {
+            "enable": true,
+            "speed": 0.333,
+            "size_min": 0,
+            "sync": false
+          }
+        },
+        "line_linked": {
+          "enable": false,
+          "distance": 150,
+          "color": "#ffffff",
+          "opacity": 0.4,
+          "width": 1
+        },
+        "move": {
+          "enable": true,
+          "speed": 0.1,
+          "direction": "none",
+          "random": true,
+          "straight": false,
+          "out_mode": "out",
+          "bounce": false,
+          "attract": {
+            "enable": false,
+            "rotateX": 600,
+            "rotateY": 1200
+          }
+        }
+      },
+      "interactivity": {
+        "detect_on": "canvas",
+        "events": {
+          "onhover": {
+            "enable": true,
+            "mode": "bubble"
+          },
+          "onclick": {
+            "enable": true,
+            "mode": "push"
+          },
+          "resize": true
+        },
+        "modes": {
+          "grab": {
+            "distance": 400,
+            "line_linked": {
+              "opacity": 1
+            }
+          },
+          "bubble": {
+            "distance": 83.9,
+            "size": 1,
+            "duration": 3,
+            "opacity": 1,
+            "speed": 3
+          },
+          "repulse": {
+            "distance": 200,
+            "duration": 0.4
+          },
+          "push": {
+            "particles_nb": 4
+          },
+          "remove": {
+            "particles_nb": 2
+          }
+        }
+      },
+      "retina_detect": true
+    });
 
-    // Asignamos 500 estrellas pequeñas y 200 un poco más grandes
-    document.querySelector('.stars').style.boxShadow = generateBoxShadows(500);
-    document.querySelector('.stars2').style.boxShadow = generateBoxShadows(200);
-
-    // 2. Inyectar cometas (estrellas fugaces) en posiciones aleatorias
     const nightContainer = document.getElementById('night-container');
-    const cometsCount = 20;
+    const cometsCount = 4; // Cantidad reducida para que se vean de vez en cuando
 
     for (let i = 0; i < cometsCount; i++) {
       let star = document.createElement('div');
       star.classList.add('shooting_star');
       
-      // Posición aleatoria entre -20% y 120% para que nazcan en toda la pantalla e incluso fuera de cámara
-      let topPos = Math.floor(Math.random() * 140) - 20;
-      let leftPos = Math.floor(Math.random() * 140) - 20;
+      // Posición inicial aleatoria extendida
+      let topPos = Math.floor(Math.random() * 150) - 25;
+      let leftPos = Math.floor(Math.random() * 150) - 25;
       
-      // Retraso aleatorio de 0 a 9999 milisegundos
-      let delay = Math.floor(Math.random() * 9999);
+      // Retraso aleatorio de hasta 25 segundos para desfasarlos
+      let delay = Math.floor(Math.random() * 25000);
       
       star.style.top = `${topPos}%`;
       star.style.left = `${leftPos}%`;
-      
-      // Guardamos el retraso en una variable CSS para que los pseudo-elementos también la usen en sincronía
       star.style.setProperty('--delay', `${delay}ms`);
       
       nightContainer.appendChild(star);
